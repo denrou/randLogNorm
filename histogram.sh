@@ -6,6 +6,8 @@
 #    Description:	From a list of number, sort them in a certain number of
 #					category
 #
+#   Dependancies:	mktemp, awk, cut, echo, bc, rm
+#
 #        Created:	23/05/2012 16:03:23
 #
 #         Author:	Denis Roussel (denis.roussel@simap.grenoble-inp.fr)
@@ -14,9 +16,15 @@
 
 set -o nounset								# Treat unset variables as an error
 
-list=$1
+# To change if necessary
+# ----------------------
+NUMBER_CLASS=10
+# ----------------------
 
-STATS=$(mktemp)
+LIST_VALUES=$1
+TMP_STATS=$(mktemp)
+
+# Find bonding limits and store it to a temporary file (min_value, max_value and number of entries)
 awk '
 	NR==1{
 		min = $1
@@ -28,28 +36,26 @@ awk '
 	}
 	END{
 		printf( "%f\t%f\t%d\n", min, max, NR )
-	}' $list > $STATS
+	}' $LIST_VALUES > $TMP_STATS
 	
-nmin=$(cut -f 1 $STATS)
-nmax=$(cut -f 2 $STATS)
-nnumber=$(cut -f 3 $STATS)
-rm $STATS
-nclass=$(($nnumber/100))
-step=$(echo "($nmax-$nmin)/$nclass" | bc -l)
+VALUE_MIN=$(cut -f 1 $TMP_STATS)
+VALUE_MAX=$(cut -f 2 $TMP_STATS)
+NUMBER_VALUES=$(cut -f 3 $TMP_STATS)
+STEP=$(echo "($VALUE_MAX-$VALUE_MIN)/$NUMBER_CLASS" | bc -l)
 
-awk -v nclass=$nclass -v nmin=$nmin -v step=$step '
+rm $TMP_STATS
+
+# Sort values into different classes
+awk -v nclass=$NUMBER_CLASS -v valmin=$VALUE_MIN -v step=$STEP '
 	BEGIN{
-		for( i = 0; i < nclass; i++ )
-		{
-			class[i] = nmin + i*step
+		for( i = 0; i < nclass; i++ ) {
+			class[i] = valmin + i*step
 			n[i] = 0
 		}
 	}
-	{ n[int(($1 - nmin)/step)]++ }
+	{ n[int(($1 - valmin)/step)]++ }
 	END{
 		for( i = 0; i < nclass; i++ )
-		{
 			if( n[i] > 0 )
 				printf( "%f\t%d\n", class[i], n[i] )
-		}
-	}' $list
+	}' $LIST_VALUES
