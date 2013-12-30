@@ -60,41 +60,40 @@ double xmode_lognormal(double mean, double sd)
 	// To change if necessary
 	// -----------------------
 	double mean = 1;
-	double sd = 0.5;
-	int nrand_max = 1000000;
+	double standard_deviation = 0.5;
+	int number_to_generate = 10;
 	// -----------------------
 
-	int nrand = 0;
-	double nb_alea1, nb_alea2;
+	int already_generated = 0;
+	double random_number_1, random_number_2;
 
-	double y_max = lognormal(xmode_lognormal(mean, sd), mean, sd);
-	double y_max_stop = y_max / nrand_max;
-	double x = xmode_lognormal(mean, sd);
+	double y_max = lognormal(xmode_lognormal(mean, standard_deviation), mean, standard_deviation);
+	double y_limit = y_max / number_to_generate;
+	double x = xmode_lognormal(mean, standard_deviation);
 	double y = y_max;
 	
 	double step = mean / 100;
 
 
-	while ( y > y_max_stop )
+	while ( y > y_limit )
 	{
 		x += step;
-		y = lognormal(x, mean, sd);
+		y = lognormal(x, mean, standard_deviation);
 	}
 
 	double x_max = x;
 	srand( time(NULL) );
 
-	while ( nrand < nrand_max)
+	while ( already_generated < number_to_generate)
 	{
-		nb_alea1 = rand()/(double)RAND_MAX * x_max;
-		nb_alea2 = rand()/(double)RAND_MAX * y_max;
-		y = lognormal(nb_alea1, mean, sd);
-		if ( nb_alea2 <= y )
+		random_number_1 = rand()/(double)RAND_MAX * x_max;
+		random_number_2 = rand()/(double)RAND_MAX * y_max;
+		y = lognormal(random_number_1, mean, standard_deviation);
+		if ( random_number_2 <= y )
 		{
-			printf("%f\n", nb_alea1);
-			nrand += 1;
+			printf("%f\n", random_number_1);
+			already_generated += 1;
 		}
 	}
 	return EXIT_SUCCESS;
 }				/* ----------  end of function main  ---------- */
-
