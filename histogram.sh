@@ -60,8 +60,7 @@ awk -v nclass=$NUMBER_CLASS -v valmin=$VALUE_MIN -v step=$STEP '
 	{ n[int(($1 - valmin)/step)]++ }
 	END{
 		for( i = 0; i < nclass; i++ )
-			if( n[i] > 0 )
-				printf( "%f\t%d\n", class[i], n[i] )
+			printf( "%f\t%d\n", class[i], n[i] )
 	}' $TMP_LIST_VALUES
 	
 rm $TMP_LIST_VALUES
