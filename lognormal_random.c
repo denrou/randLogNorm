@@ -19,33 +19,9 @@
 #include <errno.h>
 #include <time.h>
 
+double lognormal(double x, double mean, double sd);
+double xmode_lognormal(double mean, double sd);
 
-/*
- * ===  FUNCTION  ======================================================================
- *         Name:  lognormal
- *  Description:  expression of a lognormal distribution
- * =====================================================================================
- */
-double lognormal(double x, double mean, double sd)
-{
-	double sigma = sqrt( log( sd/pow(mean,2) + 1 ) );
-	double mu = log( mean ) - pow(sigma,2) / 2;
-	return ( exp( - pow((log(x) - mu), 2) / (2*pow(sigma,2)) ) / (x * sigma * sqrt(2 * M_PI) ) );
-}				/* ----------  end of function lognormal  ---------- */
-
-
-/*
- * ===  FUNCTION  ======================================================================
- *         Name:  xmode_lognormal
- *  Description:  find x for which f(x) is max
- * =====================================================================================
- */
-double xmode_lognormal(double mean, double sd)
-{
-	double sigma = sqrt( log( sd/pow(mean,2) + 1 ) );
-	double mu = log( mean ) - pow(sigma,2) / 2;
-	return exp(mu - pow(sigma,2));
-}				/* ----------  end of function xmode_lognormal  ---------- */
 
 
 /*
@@ -61,10 +37,10 @@ double xmode_lognormal(double mean, double sd)
 	// -----------------------
 	double mean = 1;
 	double standard_deviation = 0.5;
-	int number_to_generate = 10;
+	int number_to_generate = 100;
 	// -----------------------
 
-	int already_generated = 0;
+	int number_generated = 0;
 	double random_number_1, random_number_2;
 
 	double y_max = lognormal(xmode_lognormal(mean, standard_deviation), mean, standard_deviation);
@@ -73,8 +49,6 @@ double xmode_lognormal(double mean, double sd)
 	double y = y_max;
 	
 	double step = mean / 100;
-
-
 	while ( y > y_limit )
 	{
 		x += step;
@@ -84,7 +58,7 @@ double xmode_lognormal(double mean, double sd)
 	double x_max = x;
 	srand( time(NULL) );
 
-	while ( already_generated < number_to_generate)
+	while( number_generated < number_to_generate )
 	{
 		random_number_1 = rand()/(double)RAND_MAX * x_max;
 		random_number_2 = rand()/(double)RAND_MAX * y_max;
@@ -92,8 +66,37 @@ double xmode_lognormal(double mean, double sd)
 		if ( random_number_2 <= y )
 		{
 			printf("%f\n", random_number_1);
-			already_generated += 1;
+			number_generated += 1;
 		}
 	}
 	return EXIT_SUCCESS;
 }				/* ----------  end of function main  ---------- */
+
+
+/*
+ * ===  FUNCTION  ======================================================================
+ *         Name:  lognormal
+ *  Description:  expression of a lognormal distribution
+ * =====================================================================================
+ */
+double lognormal(double x, double mean, double sd)
+{
+	double sigma = sqrt(log(sd/pow(mean,2)+1));
+	double mu = log(mean)-pow(sigma,2)/2;
+	return exp(-pow((log(x)-mu),2)/(2*pow(sigma,2))) / (x*sigma*sqrt(2*M_PI));
+}				/* ----------  end of function lognormal  ---------- */
+
+
+/*
+ * ===  FUNCTION  ======================================================================
+ *         Name:  xmode_lognormal
+ *  Description:  find x for which f(x) is max
+ * =====================================================================================
+ */
+double xmode_lognormal(double mean, double sd)
+{
+	double sigma = sqrt(log(sd/pow(mean,2)+1));
+	double mu = log(mean)-pow(sigma,2)/2;
+	return exp(mu - pow(sigma,2));
+}				/* ----------  end of function xmode_lognormal  ---------- */
+
