@@ -23,7 +23,6 @@ double lognormal(double x, double mean, double sd);
 double xmode_lognormal(double mean, double sd);
 
 
-
 /*
  * ===  FUNCTION  ======================================================================
  *         Name:  main
