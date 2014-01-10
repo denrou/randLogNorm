@@ -7,7 +7,7 @@
  *
  *        Created:  17/05/2012 13:27:04
  *
- *         Author:  Denis Roussel (denis.roussel@simap.grenoble-inp.fr)
+ *         Author:  Denis Roussel
  *
  * =====================================================================================
  */
@@ -36,7 +36,7 @@ double xmode_lognormal(double mean, double sd);
 	// -----------------------
 	double mean = 1;
 	double standard_deviation = 0.5;
-	int number_to_generate = 100;
+	int number_to_generate = 100000;
 	// -----------------------
 
 	int number_generated = 0;
