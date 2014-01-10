@@ -10,7 +10,7 @@
 #
 #        Created:	23/05/2012 16:03:23
 #
-#         Author:	Denis Roussel (denis.roussel@simap.grenoble-inp.fr)
+#         Author:	Denis Roussel
 #
 # ==============================================================================
 
@@ -18,7 +18,7 @@ set -o nounset								# Treat unset variables as an error
 
 # To change if necessary
 # ----------------------
-NUMBER_CLASS=10
+NUMBER_CLASS=100
 # ----------------------
 
 TMP_LIST_VALUES=$(mktemp)
